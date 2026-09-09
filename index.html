@@ -1,343 +1,513 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Dukaan Hisab - Pakistan ka simple dukandaar calculator. Profit, discount, margin, stock, daily sale, monthly profit, expense aur udhaar ka asaan hisab." />
-  <meta name="keywords" content="dukaan hisab, profit calculator Pakistan, shopkeeper calculator, discount calculator, margin calculator, stock calculator, udhaar calculator" />
-  <meta name="theme-color" content="#0f766e" />
-  <title>Dukaan Hisab - Simple Dukandaar Calculator</title>
-  <style>
-    :root {
-      --bg: #f6f8fb;
-      --card: #ffffff;
-      --text: #172033;
-      --muted: #667085;
-      --brand: #0f766e;
-      --brand2: #115e59;
-      --line: #e7eaf0;
-      --good: #15803d;
-      --bad: #b91c1c;
-      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-      --radius: 18px;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    .hero {
-      background: linear-gradient(135deg, var(--brand), #14b8a6);
-      color: #fff;
-      padding: 28px 16px 78px;
-    }
-    .wrap { width: min(1080px, calc(100% - 28px)); margin: 0 auto; }
-    .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .logo { font-weight: 800; font-size: 22px; letter-spacing: .2px; }
-    .badge { font-size: 12px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.25); padding: 7px 10px; border-radius: 999px; }
-    h1 { margin: 28px 0 8px; font-size: clamp(30px, 7vw, 48px); line-height: 1.05; }
-    .tagline { margin: 0; max-width: 690px; opacity: .95; font-size: 16px; line-height: 1.6; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .main { margin-top: -48px; padding-bottom: 46px; }
-    .quick-nav {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .quick-nav a {
-      text-decoration: none;
-      color: var(--text);
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px 10px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 13px;
-      box-shadow: 0 4px 16px rgba(15,23,42,.05);
-    }
-    .grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
-    }
-    .card h2 { margin: 0 0 4px; font-size: 20px; }
-    .sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.5; }
-    .fields { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .field { display: flex; flex-direction: column; gap: 6px; }
-    .field.full { grid-column: 1 / -1; }
-    label { font-size: 13px; font-weight: 700; }
-    input {
-      width: 100%;
-      border: 1px solid #d8dde7;
-      background: #fff;
-      color: var(--text);
-      border-radius: 12px;
-      padding: 12px 13px;
-      font-size: 16px;
-      outline: none;
-      transition: .2s;
-    }
-    input:focus { border-color: #2dd4bf; box-shadow: 0 0 0 3px rgba(45,212,191,.15); }
-    button {
-      width: 100%;
-      margin-top: 14px;
-      border: 0;
-      border-radius: 12px;
-      padding: 13px 14px;
-      background: var(--brand);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    button:active { transform: translateY(1px); }
-    .result {
-      margin-top: 14px;
-      padding: 13px;
-      border-radius: 13px;
-      background: #f0fdfa;
-      border: 1px solid #ccfbf1;
-      line-height: 1.7;
-      font-size: 14px;
-      min-height: 48px;
-    }
-    .result strong { font-size: 15px; }
-    .good { color: var(--good); font-weight: 800; }
-    .bad { color: var(--bad); font-weight: 800; }
-    .wide { grid-column: 1 / -1; }
-    .info-strip {
-      margin-top: 18px;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 18px;
-    }
-    .info-strip h3 { margin: 0 0 8px; }
-    .info-strip p { margin: 0; color: var(--muted); line-height: 1.7; font-size: 14px; }
-    footer { text-align: center; color: var(--muted); font-size: 12px; padding: 8px 16px 34px; }
+<title>Dukaan Hisab - Pakistan Shopkeeper Calculator</title>
 
-    @media (max-width: 760px) {
-      .quick-nav { grid-template-columns: repeat(2, 1fr); }
-      .grid { grid-template-columns: 1fr; }
-      .wide { grid-column: auto; }
-    }
-    @media (max-width: 460px) {
-      .fields { grid-template-columns: 1fr; }
-      .field.full { grid-column: auto; }
-      .hero { padding-top: 22px; }
-      .card { padding: 16px; }
-    }
-  </style>
+<meta name="description" content="Dukaan Hisab is a simple free calculator website for Pakistani shopkeepers. Calculate profit, discount, margin, stock value, sales, expenses, udhaar and wholesale prices.">
+
+<meta name="keywords" content="dukaan hisab, shopkeeper calculator Pakistan, profit calculator, discount calculator, margin calculator, stock calculator, udhaar calculator, wholesale calculator">
+
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f4f7f8;
+color:#222;
+line-height:1.6
+}
+header{
+background:#087f73;
+color:white;
+padding:25px 15px;
+text-align:center
+}
+header h1{margin:0;font-size:30px}
+header p{margin:8px 0 15px}
+nav a{
+display:inline-block;
+color:white;
+text-decoration:none;
+margin:4px;
+padding:7px 10px;
+border-radius:6px;
+background:rgba(255,255,255,.15);
+font-size:14px
+}
+.container{
+max-width:950px;
+margin:auto;
+padding:15px
+}
+.intro{
+background:white;
+padding:20px;
+border-radius:12px;
+margin:15px 0;
+box-shadow:0 2px 8px #ddd
+}
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:15px
+}
+.card{
+background:white;
+padding:18px;
+border-radius:12px;
+box-shadow:0 2px 8px #ddd
+}
+.card h2{
+color:#087f73;
+margin-top:0;
+font-size:21px
+}
+label{
+display:block;
+font-weight:bold;
+margin-top:10px
+}
+input{
+width:100%;
+padding:11px;
+margin-top:5px;
+border:1px solid #ccc;
+border-radius:7px;
+font-size:16px
+}
+button{
+width:100%;
+padding:12px;
+margin-top:15px;
+border:0;
+border-radius:7px;
+background:#087f73;
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer
+}
+button:hover{opacity:.9}
+.result{
+margin-top:15px;
+padding:12px;
+background:#e9f7f5;
+border-left:4px solid #087f73;
+border-radius:6px
+}
+.guide{
+background:white;
+padding:20px;
+margin-top:20px;
+border-radius:12px;
+box-shadow:0 2px 8px #ddd
+}
+.guide h2{color:#087f73}
+.faq{
+margin-top:20px
+}
+.faq h3{
+font-size:17px;
+margin-bottom:5px
+}
+footer{
+margin-top:30px;
+padding:25px 15px;
+background:#123;
+color:white;
+text-align:center
+}
+.small{
+font-size:13px;
+color:#666
+}
+footer .small{color:#ddd}
+</style>
 </head>
+
 <body>
-  <header class="hero">
-    <div class="wrap">
-      <div class="brand-row">
-        <div class="logo">🧮 Dukaan Hisab</div>
-        <div class="badge">Pakistan • Free Tool</div>
-      </div>
-      <h1>Pakistan ka Simple Dukandaar Calculator</h1>
-      <p class="tagline">Profit, discount, margin, stock, daily sale, monthly profit, expenses aur udhaar ka hisab — asaan aur mobile-friendly.</p>
-    </div>
-  </header>
 
-  <main class="main wrap">
-    <nav class="quick-nav" aria-label="Quick tools">
-      <a href="#profit">Profit</a>
-      <a href="#discount">Discount</a>
-      <a href="#margin">Margin</a>
-      <a href="#stock">Stock</a>
-      <a href="#sales">Daily Sale</a>
-      <a href="#expense">Expense</a>
-      <a href="#udhaar">Udhaar</a>
-      <a href="#wholesale">Wholesale</a>
-    </nav>
+<header>
+<h1>Pakistan ka Simple Dukandaar Calculator</h1>
+<p>Profit, discount, margin, stock, sales, expenses aur udhaar ka asaan hisab.</p>
 
-    <section class="grid">
+<nav>
+<a href="#profit">Profit</a>
+<a href="#discount">Discount</a>
+<a href="#margin">Margin</a>
+<a href="#stock">Stock</a>
+<a href="#sales">Sales</a>
+<a href="#expense">Expenses</a>
+<a href="#udhaar">Udhaar</a>
+<a href="#wholesale">Wholesale</a>
+<a href="#guide">Shopkeeper Guide</a>
+</nav>
+</header>
 
-      <article class="card" id="profit">
-        <h2>💰 Profit Calculator</h2>
-        <p class="sub">Kharid, bikri aur quantity se total munafa nikaalein.</p>
-        <div class="fields">
-          <div class="field"><label>Purchase Price (Rs)</label><input id="pBuy" type="number" inputmode="decimal" min="0" placeholder="e.g. 100" /></div>
-          <div class="field"><label>Selling Price (Rs)</label><input id="pSell" type="number" inputmode="decimal" min="0" placeholder="e.g. 130" /></div>
-          <div class="field full"><label>Quantity</label><input id="pQty" type="number" inputmode="numeric" min="0" placeholder="e.g. 10" /></div>
-        </div>
-        <button onclick="calcProfit()">Calculate Profit</button>
-        <div class="result" id="pResult">Result yahan nazar aayega.</div>
-      </article>
+<div class="container">
 
-      <article class="card" id="discount">
-        <h2>🏷️ Discount Calculator</h2>
-        <p class="sub">Original price aur discount % se final price nikaalein.</p>
-        <div class="fields">
-          <div class="field"><label>Original Price (Rs)</label><input id="dPrice" type="number" inputmode="decimal" min="0" placeholder="e.g. 2000" /></div>
-          <div class="field"><label>Discount (%)</label><input id="dPct" type="number" inputmode="decimal" min="0" max="100" placeholder="e.g. 10" /></div>
-        </div>
-        <button onclick="calcDiscount()">Calculate Discount</button>
-        <div class="result" id="dResult">Result yahan nazar aayega.</div>
-      </article>
+<div class="intro">
+<h2>🧮 Dukaan Hisab</h2>
+<p>
+Dukaan Hisab ek free aur simple online calculator hai jo Pakistani
+dukandaron ko rozmarra business ka hisab asaani se calculate karne mein
+madad karta hai.
+</p>
+<p><b>Mobile par bhi asaani se use karein.</b></p>
+</div>
 
-      <article class="card" id="margin">
-        <h2>📈 Margin / Selling Price</h2>
-        <p class="sub">Cost aur desired margin % se required selling price nikaalein.</p>
-        <div class="fields">
-          <div class="field"><label>Cost Price (Rs)</label><input id="mCost" type="number" inputmode="decimal" min="0" placeholder="e.g. 500" /></div>
-          <div class="field"><label>Desired Margin (%)</label><input id="mPct" type="number" inputmode="decimal" min="0" max="99.99" placeholder="e.g. 20" /></div>
-        </div>
-        <button onclick="calcMargin()">Calculate Selling Price</button>
-        <div class="result" id="mResult">Result yahan nazar aayega.</div>
-      </article>
+<div class="grid">
 
-      <article class="card" id="stock">
-        <h2>📦 Stock Calculator</h2>
-        <p class="sub">Available stock ki total cost aur possible sale value dekhein.</p>
-        <div class="fields">
-          <div class="field"><label>Units in Stock</label><input id="sQty" type="number" inputmode="numeric" min="0" placeholder="e.g. 50" /></div>
-          <div class="field"><label>Cost per Unit (Rs)</label><input id="sCost" type="number" inputmode="decimal" min="0" placeholder="e.g. 80" /></div>
-          <div class="field full"><label>Selling Price per Unit (Rs)</label><input id="sSell" type="number" inputmode="decimal" min="0" placeholder="e.g. 100" /></div>
-        </div>
-        <button onclick="calcStock()">Calculate Stock Value</button>
-        <div class="result" id="sResult">Result yahan nazar aayega.</div>
-      </article>
+<!-- PROFIT -->
+<div class="card" id="profit">
+<h2>💰 Profit Calculator</h2>
 
-      <article class="card" id="sales">
-        <h2>🧾 Daily Sale → Monthly Profit</h2>
-        <p class="sub">Rozana sale aur average profit % se monthly estimate.</p>
-        <div class="fields">
-          <div class="field"><label>Average Daily Sale (Rs)</label><input id="saleDaily" type="number" inputmode="decimal" min="0" placeholder="e.g. 15000" /></div>
-          <div class="field"><label>Average Profit (%)</label><input id="salePct" type="number" inputmode="decimal" min="0" placeholder="e.g. 12" /></div>
-          <div class="field full"><label>Working Days / Month</label><input id="saleDays" type="number" inputmode="numeric" min="1" max="31" value="30" /></div>
-        </div>
-        <button onclick="calcSales()">Estimate Monthly Profit</button>
-        <div class="result" id="saleResult">Result yahan nazar aayega.</div>
-      </article>
+<label>Buying Price per Item</label>
+<input id="pBuy" type="number" placeholder="Example: 100">
 
-      <article class="card" id="expense">
-        <h2>💸 Expense Calculator</h2>
-        <p class="sub">Monthly gross profit se kharchay minus karke net profit dekhein.</p>
-        <div class="fields">
-          <div class="field"><label>Gross Profit (Rs)</label><input id="eGross" type="number" inputmode="decimal" placeholder="e.g. 60000" /></div>
-          <div class="field"><label>Rent (Rs)</label><input id="eRent" type="number" inputmode="decimal" min="0" placeholder="e.g. 15000" /></div>
-          <div class="field"><label>Electricity (Rs)</label><input id="eElec" type="number" inputmode="decimal" min="0" placeholder="e.g. 8000" /></div>
-          <div class="field"><label>Other Expenses (Rs)</label><input id="eOther" type="number" inputmode="decimal" min="0" placeholder="e.g. 5000" /></div>
-        </div>
-        <button onclick="calcExpense()">Calculate Net Profit</button>
-        <div class="result" id="eResult">Result yahan nazar aayega.</div>
-      </article>
+<label>Selling Price per Item</label>
+<input id="pSell" type="number" placeholder="Example: 130">
 
-      <article class="card" id="udhaar">
-        <h2>🤝 Udhaar Calculator</h2>
-        <p class="sub">Total udhaar, received payment aur baki amount ka hisab.</p>
-        <div class="fields">
-          <div class="field"><label>Total Udhaar (Rs)</label><input id="uTotal" type="number" inputmode="decimal" min="0" placeholder="e.g. 10000" /></div>
-          <div class="field"><label>Payment Received (Rs)</label><input id="uPaid" type="number" inputmode="decimal" min="0" placeholder="e.g. 3500" /></div>
-        </div>
-        <button onclick="calcUdhaar()">Calculate Balance</button>
-        <div class="result" id="uResult">Result yahan nazar aayega.</div>
-      </article>
+<label>Quantity</label>
+<input id="pQty" type="number" placeholder="Example: 20">
 
-      <article class="card" id="wholesale">
-        <h2>🏪 Wholesale → Retail</h2>
-        <p class="sub">Wholesale cost par markup laga kar retail price nikaalein.</p>
-        <div class="fields">
-          <div class="field"><label>Wholesale Price (Rs)</label><input id="wCost" type="number" inputmode="decimal" min="0" placeholder="e.g. 1000" /></div>
-          <div class="field"><label>Markup (%)</label><input id="wPct" type="number" inputmode="decimal" min="0" placeholder="e.g. 15" /></div>
-        </div>
-        <button onclick="calcWholesale()">Calculate Retail Price</button>
-        <div class="result" id="wResult">Result yahan nazar aayega.</div>
-      </article>
+<button onclick="calcProfit()">Calculate Profit</button>
 
-    </section>
+<div class="result" id="profitResult">Result yahan show hoga.</div>
+</div>
 
-    <section class="info-strip">
-      <h3>Dukaan Hisab kyun?</h3>
-      <p>Yeh website chhoti dukaandari ke rozmarra hisaab ko jaldi aur asaan banane ke liye hai. Koi login zaroori nahi. Apne numbers daalein aur foran result dekhein.</p>
-    </section>
-  </main>
+<!-- DISCOUNT -->
+<div class="card" id="discount">
+<h2>🏷️ Discount Calculator</h2>
 
-  <footer>
-    © 2026 Dukaan Hisab • Simple business calculators for Pakistan<br />
-    Note: Results estimates hain; official accounting/tax advice nahi.
-  </footer>
+<label>Original Price</label>
+<input id="dPrice" type="number" placeholder="Example: 1000">
 
-  <script>
-    const n = id => parseFloat(document.getElementById(id).value) || 0;
-    const money = v => new Intl.NumberFormat('en-PK', { maximumFractionDigits: 2 }).format(v);
-    const pct = v => Number.isFinite(v) ? v.toFixed(2) : '0.00';
-    const set = (id, html) => document.getElementById(id).innerHTML = html;
+<label>Discount %</label>
+<input id="dPercent" type="number" placeholder="Example: 10">
 
-    function calcProfit() {
-      const buy = n('pBuy'), sell = n('pSell'), qty = n('pQty');
-      if (qty <= 0) return set('pResult', 'Quantity 0 se zyada honi chahiye.');
-      const investment = buy * qty;
-      const sale = sell * qty;
-      const profit = sale - investment;
-      const perItem = sell - buy;
-      const margin = sale > 0 ? (profit / sale) * 100 : 0;
-      const cls = profit >= 0 ? 'good' : 'bad';
-      set('pResult', `Total Investment: <strong>Rs ${money(investment)}</strong><br>Total Sale: <strong>Rs ${money(sale)}</strong><br>Per Item Profit: <strong>Rs ${money(perItem)}</strong><br>Total Profit: <span class="${cls}">Rs ${money(profit)}</span><br>Profit Margin: <strong>${pct(margin)}%</strong>`);
-    }
+<button onclick="calcDiscount()">Calculate Discount</button>
 
-    function calcDiscount() {
-      const price = n('dPrice'), d = n('dPct');
-      if (d < 0 || d > 100) return set('dResult', 'Discount 0% se 100% ke darmiyan hona chahiye.');
-      const save = price * d / 100;
-      const final = price - save;
-      set('dResult', `Aap ki bachat: <strong>Rs ${money(save)}</strong><br>Final Price: <span class="good">Rs ${money(final)}</span>`);
-    }
+<div class="result" id="discountResult">Result yahan show hoga.</div>
+</div>
 
-    function calcMargin() {
-      const cost = n('mCost'), m = n('mPct');
-      if (m >= 100) return set('mResult', 'Margin 100% se kam hona chahiye.');
-      const selling = cost / (1 - m / 100);
-      const profit = selling - cost;
-      set('mResult', `Required Selling Price: <span class="good">Rs ${money(selling)}</span><br>Profit per item: <strong>Rs ${money(profit)}</strong>`);
-    }
+<!-- MARGIN -->
+<div class="card" id="margin">
+<h2>📊 Margin Calculator</h2>
 
-    function calcStock() {
-      const qty = n('sQty'), cost = n('sCost'), sell = n('sSell');
-      const stockCost = qty * cost;
-      const saleValue = qty * sell;
-      const profit = saleValue - stockCost;
-      set('sResult', `Stock Cost Value: <strong>Rs ${money(stockCost)}</strong><br>Possible Sale Value: <strong>Rs ${money(saleValue)}</strong><br>Possible Profit: <span class="${profit >= 0 ? 'good' : 'bad'}">Rs ${money(profit)}</span>`);
-    }
+<label>Cost Price</label>
+<input id="mCost" type="number" placeholder="Example: 500">
 
-    function calcSales() {
-      const daily = n('saleDaily'), p = n('salePct'), days = n('saleDays');
-      if (days <= 0) return set('saleResult', 'Working days 1 ya us se zyada honay chahiye.');
-      const monthlySale = daily * days;
-      const monthlyProfit = monthlySale * p / 100;
-      set('saleResult', `Estimated Monthly Sale: <strong>Rs ${money(monthlySale)}</strong><br>Estimated Monthly Profit: <span class="good">Rs ${money(monthlyProfit)}</span>`);
-    }
+<label>Desired Profit Margin %</label>
+<input id="mMargin" type="number" placeholder="Example: 20">
 
-    function calcExpense() {
-      const gross = n('eGross');
-      const expenses = n('eRent') + n('eElec') + n('eOther');
-      const net = gross - expenses;
-      set('eResult', `Total Expenses: <strong>Rs ${money(expenses)}</strong><br>Net Profit: <span class="${net >= 0 ? 'good' : 'bad'}">Rs ${money(net)}</span>`);
-    }
+<button onclick="calcMargin()">Calculate Selling Price</button>
 
-    function calcUdhaar() {
-      const total = n('uTotal'), paid = n('uPaid');
-      const balance = total - paid;
-      set('uResult', `Received: <strong>Rs ${money(paid)}</strong><br>Remaining Balance: <span class="${balance > 0 ? 'bad' : 'good'}">Rs ${money(balance)}</span>`);
-    }
+<div class="result" id="marginResult">Result yahan show hoga.</div>
+</div>
 
-    function calcWholesale() {
-      const cost = n('wCost'), m = n('wPct');
-      const profit = cost * m / 100;
-      const retail = cost + profit;
-      set('wResult', `Markup Amount: <strong>Rs ${money(profit)}</strong><br>Suggested Retail Price: <span class="good">Rs ${money(retail)}</span>`);
-    }
-  </script>
+<!-- STOCK -->
+<div class="card" id="stock">
+<h2>📦 Stock Calculator</h2>
+
+<label>Cost per Item</label>
+<input id="sCost" type="number" placeholder="Example: 200">
+
+<label>Selling Price per Item</label>
+<input id="sSell" type="number" placeholder="Example: 250">
+
+<label>Stock Quantity</label>
+<input id="sQty" type="number" placeholder="Example: 100">
+
+<button onclick="calcStock()">Calculate Stock Value</button>
+
+<div class="result" id="stockResult">Result yahan show hoga.</div>
+</div>
+
+<!-- SALES -->
+<div class="card" id="sales">
+<h2>📈 Monthly Sales Calculator</h2>
+
+<label>Average Daily Sale</label>
+<input id="saleDaily" type="number" placeholder="Example: 5000">
+
+<label>Working Days per Month</label>
+<input id="saleDays" type="number" value="30">
+
+<label>Profit Margin %</label>
+<input id="saleMargin" type="number" placeholder="Example: 15">
+
+<button onclick="calcSales()">Calculate Monthly Profit</button>
+
+<div class="result" id="salesResult">Result yahan show hoga.</div>
+</div>
+
+<!-- EXPENSE -->
+<div class="card" id="expense">
+<h2>💸 Expense Calculator</h2>
+
+<label>Monthly Sales</label>
+<input id="eSales" type="number" placeholder="Example: 150000">
+
+<label>Monthly Business Expenses</label>
+<input id="eExpense" type="number" placeholder="Example: 30000">
+
+<label>Gross Profit</label>
+<input id="eProfit" type="number" placeholder="Example: 50000">
+
+<button onclick="calcExpense()">Calculate Net Profit</button>
+
+<div class="result" id="expenseResult">Result yahan show hoga.</div>
+</div>
+
+<!-- UDHAAR -->
+<div class="card" id="udhaar">
+<h2>🧾 Udhaar Calculator</h2>
+
+<label>Total Udhaar</label>
+<input id="uTotal" type="number" placeholder="Example: 10000">
+
+<label>Received Amount</label>
+<input id="uReceived" type="number" placeholder="Example: 4000">
+
+<button onclick="calcUdhaar()">Calculate Remaining Udhaar</button>
+
+<div class="result" id="udhaarResult">Result yahan show hoga.</div>
+</div>
+
+<!-- WHOLESALE -->
+<div class="card" id="wholesale">
+<h2>🏪 Wholesale / Retail Calculator</h2>
+
+<label>Wholesale Cost</label>
+<input id="wCost" type="number" placeholder="Example: 800">
+
+<label>Markup %</label>
+<input id="wMarkup" type="number" placeholder="Example: 25">
+
+<button onclick="calcWholesale()">Calculate Retail Price</button>
+
+<div class="result" id="wholesaleResult">Result yahan show hoga.</div>
+</div>
+
+</div>
+
+<!-- GUIDE -->
+<section class="guide" id="guide">
+
+<h2>📚 Shopkeeper Guide</h2>
+
+<p>
+Dukaan chalane mein sirf sale karna kaafi nahi hota. Dukandaar ko
+purchase price, selling price, profit, expenses aur stock ka bhi sahi
+hisab rakhna chahiye.
+</p>
+
+<h3>1. Profit kaise calculate karein?</h3>
+<p>
+Profit = Selling Price − Buying Price
+</p>
+
+<h3>2. Discount kaise calculate karein?</h3>
+<p>
+Discount customer ko original price par percentage ki bunyaad par diya
+jata hai. Discount dene se pehle apna profit zaroor check karein.
+</p>
+
+<h3>3. Stock ka hisab kyun zaroori hai?</h3>
+<p>
+Stock ki total cost aur possible selling value maloom hone se dukandaar
+ko apne business ki actual position samajhne mein madad milti hai.
+</p>
+
+<h3>4. Udhaar ka record kyun rakhein?</h3>
+<p>
+Udhaar ka proper record cash flow ko manage karne aur customers se
+remaining payment recover karne mein madad karta hai.
+</p>
+
+<h3>5. Business expenses ka hisab</h3>
+<p>
+Rent, electricity, transport, staff salary aur doosre monthly expenses
+ko record karna zaroori hai taake net profit ka andaza ho sake.
+</p>
+
+</section>
+
+<!-- FAQ -->
+<section class="guide faq">
+
+<h2>❓ Frequently Asked Questions</h2>
+
+<h3>What is Dukaan Hisab?</h3>
+<p>
+Dukaan Hisab ek free online calculator website hai jo shopkeepers ko
+business calculations mein madad karti hai.
+</p>
+
+<h3>Is Dukaan Hisab free?</h3>
+<p>
+Ji haan, ye calculators free use kiye ja sakte hain.
+</p>
+
+<h3>Can I use Dukaan Hisab on mobile?</h3>
+<p>
+Ji haan, website mobile-friendly hai aur Android phones par bhi use
+ki ja sakti hai.
+</p>
+
+<h3>Does this website provide official accounting or tax advice?</h3>
+<p>
+Nahi. Ye calculators estimates aur general business calculations ke
+liye hain. Official accounting ya tax matters ke liye qualified
+professional se mashwara karein.
+</p>
+
+</section>
+
+</div>
+
+<footer>
+<p><b>Dukaan Hisab</b> — Simple Business Calculators for Pakistan</p>
+<p>© 2026 Dukaan Hisab. All rights reserved.</p>
+<p class="small">
+Results are estimates and are not official accounting or tax advice.
+</p>
+</footer>
+
+<script>
+
+function num(id){
+return parseFloat(document.getElementById(id).value) || 0;
+}
+
+function money(n){
+return "Rs. " + n.toFixed(2);
+}
+
+function calcProfit(){
+
+let buy=num("pBuy");
+let sell=num("pSell");
+let qty=num("pQty");
+
+let per=sell-buy;
+let total=per*qty;
+let investment=buy*qty;
+let margin=sell>0 ? (per/sell)*100 : 0;
+
+document.getElementById("profitResult").innerHTML=
+"Investment: <b>"+money(investment)+"</b><br>"+
+"Profit per item: <b>"+money(per)+"</b><br>"+
+"Total Profit: <b>"+money(total)+"</b><br>"+
+"Profit Margin: <b>"+margin.toFixed(2)+"%</b>";
+}
+
+function calcDiscount(){
+
+let price=num("dPrice");
+let percent=num("dPercent");
+
+let saving=price*percent/100;
+let finalPrice=price-saving;
+
+document.getElementById("discountResult").innerHTML=
+"Discount Saving: <b>"+money(saving)+"</b><br>"+
+"Final Price: <b>"+money(finalPrice)+"</b>";
+}
+
+function calcMargin(){
+
+let cost=num("mCost");
+let margin=num("mMargin");
+
+if(margin>=100){
+document.getElementById("marginResult").innerHTML=
+"Margin 100% se kam honi chahiye.";
+return;
+}
+
+let selling=cost/(1-margin/100);
+let profit=selling-cost;
+
+document.getElementById("marginResult").innerHTML=
+"Suggested Selling Price: <b>"+money(selling)+"</b><br>"+
+"Profit: <b>"+money(profit)+"</b>";
+}
+
+function calcStock(){
+
+let cost=num("sCost");
+let sell=num("sSell");
+let qty=num("sQty");
+
+let costValue=cost*qty;
+let saleValue=sell*qty;
+let profit=saleValue-costValue;
+
+document.getElementById("stockResult").innerHTML=
+"Stock Cost Value: <b>"+money(costValue)+"</b><br>"+
+"Possible Sale Value: <b>"+money(saleValue)+"</b><br>"+
+"Possible Profit: <b>"+money(profit)+"</b>";
+}
+
+function calcSales(){
+
+let daily=num("saleDaily");
+let days=num("saleDays");
+let margin=num("saleMargin");
+
+let monthly=daily*days;
+let profit=monthly*margin/100;
+
+document.getElementById("salesResult").innerHTML=
+"Estimated Monthly Sale: <b>"+money(monthly)+"</b><br>"+
+"Estimated Monthly Profit: <b>"+money(profit)+"</b>";
+}
+
+function calcExpense(){
+
+let sales=num("eSales");
+let expense=num("eExpense");
+let gross=num("eProfit");
+
+let net=gross-expense;
+
+document.getElementById("expenseResult").innerHTML=
+"Sales: <b>"+money(sales)+"</b><br>"+
+"Total Expenses: <b>"+money(expense)+"</b><br>"+
+"Net Profit: <b>"+money(net)+"</b>";
+}
+
+function calcUdhaar(){
+
+let total=num("uTotal");
+let received=num("uReceived");
+
+let remaining=total-received;
+
+document.getElementById("udhaarResult").innerHTML=
+"Received: <b>"+money(received)+"</b><br>"+
+"Remaining Udhaar: <b>"+money(remaining)+"</b>";
+}
+
+function calcWholesale(){
+
+let cost=num("wCost");
+let markup=num("wMarkup");
+
+let amount=cost*markup/100;
+let retail=cost+amount;
+
+document.getElementById("wholesaleResult").innerHTML=
+"Markup Amount: <b>"+money(amount)+"</b><br>"+
+"Suggested Retail Price: <b>"+money(retail)+"</b>";
+}
+
+</script>
+
 </body>
 </html>
